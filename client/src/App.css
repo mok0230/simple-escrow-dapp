@@ -1,15 +1,17 @@
 body {
   background-color: #eee;
-  display: flex;
   font-family: 'Muli', sans-serif;
+  padding: 18px;
 }
 
 .contract, .existing-contracts {
-  margin: 20px;
-  width: 50%;
-  padding: 40px;
+  padding: 24px;
   border: 1px solid #ddd;
   background-color: #fff;
+}
+
+.existing-contracts {
+  margin-bottom: 18px;
 }
 
 h1 {
