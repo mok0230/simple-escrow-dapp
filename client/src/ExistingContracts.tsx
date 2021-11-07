@@ -1,6 +1,6 @@
 import { Paper } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
-import { formatDataGridAddress } from "./utils";
+import { formatDataGridAddress, formatDataGridWeiValue } from "./utils";
 
 // TODO: define widths
 const columns = [
@@ -32,7 +32,7 @@ const columns = [
     field: 'value',
     headerName: 'Value',
     type: 'number',
-    valueFormatter: (params) => "blah",
+    valueFormatter: formatDataGridWeiValue,
     hideSortIcons: true,
     disableColumnMenu: true,
   }
@@ -58,7 +58,7 @@ function ExistingContracts({existingContracts}) {
     <Paper elevation={3} sx={{p: 3, mb:2}}>
       <h2> Existing Contracts </h2>
       {/* DataGrid "No rows" implementation is buggy and requires an explicit height */}
-      <div style={{ height: 150 + (50 * (Math.max(existingContracts.length - 1, 0))), width: '100%' }}>
+      <div style={{ height: 180 + (50 * (Math.max(existingContracts.length - 1, 0))), width: '100%' }}>
         <DataGrid
         rows={testRows}
         columns={columns}
