@@ -14,3 +14,11 @@ h2 {
   padding-bottom: 8px;
   border-bottom: 1px solid #eee;
 }
+
+.existing-contracts-header-cell {
+  pointer-events: none;
+}
+
+.existing-contracts-body-cell {
+  cursor: cell;
+}

@@ -1,8 +1,18 @@
-import { Paper } from "@mui/material";
+import { Alert, Paper, Snackbar } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
+import { useState } from "react";
 import { formatDataGridAddress, formatDataGridWeiValue } from "./utils";
 
-// TODO: define widths
+const testData = [
+  {
+    id: 'asdfsadfdsfdsafsdafds',
+    depositorAddress: '23fd34rf34te34',
+    beneficiaryAddress: '34rfret43t43efrgd',
+    arbiterAddress: 'sdf3sf3wesf3sdfs',
+    value: '1000000000000000000'
+  }
+]
+
 const columns = [
   { 
     field: 'id', 
@@ -10,7 +20,9 @@ const columns = [
     valueFormatter: formatDataGridAddress,
     hideSortIcons: true,
     disableColumnMenu: true,
-    width: 110
+    width: 110,
+    headerClassName: 'existing-contracts-header-cell',
+    cellClassName: 'existing-contracts-body-cell'
   },
   {
     field: 'depositorAddress',
@@ -18,7 +30,9 @@ const columns = [
     valueFormatter: formatDataGridAddress,
     hideSortIcons: true,
     disableColumnMenu: true,
-    width: 110
+    width: 110,
+    headerClassName: 'existing-contracts-header-cell',
+    cellClassName: 'existing-contracts-body-cell'
   },
   {
     field: 'beneficiaryAddress',
@@ -26,7 +40,9 @@ const columns = [
     valueFormatter: formatDataGridAddress,
     hideSortIcons: true,
     disableColumnMenu: true,
-    width: 110
+    width: 110,
+    headerClassName: 'existing-contracts-header-cell',
+    cellClassName: 'existing-contracts-body-cell'
   },
   {
     field: 'arbiterAddress',
@@ -34,7 +50,9 @@ const columns = [
     valueFormatter: formatDataGridAddress,
     hideSortIcons: true,
     disableColumnMenu: true,
-    width: 110
+    width: 110,
+    headerClassName: 'existing-contracts-header-cell',
+    cellClassName: 'existing-contracts-body-cell'
   },
   {
     field: 'value',
@@ -43,28 +61,47 @@ const columns = [
     valueFormatter: formatDataGridWeiValue,
     hideSortIcons: true,
     disableColumnMenu: true,
+    headerClassName: 'existing-contracts-header-cell',
+    cellClassName: 'existing-contracts-body-cell'
   }
   // TODO: add approval
 ];
 
 function ExistingContracts({existingContracts}) {
-  const handleCellClick = e => {
-    console.log('handleCellClick', e)
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const handleCellClick = async e => {
+    const cellContent = e.row[e.field];
+    console.log('copying to clipboard:', cellContent);
+    await navigator.clipboard.writeText(cellContent);
+    setSnackbarMessage(`Value copied to clipboard: ${cellContent}`);
+    setIsSnackbarOpen(true);
   }
   
   return (
     <Paper elevation={3} sx={{p: 3, mb:2}}>
       <h2> Existing Contracts </h2>
+      {existingContracts.length ? <Alert severity="info" sx={{mb:2}}>Click on a cell in the table below to copy the text content</Alert> : ""}
       {/* DataGrid "No rows" implementation is buggy and requires an explicit height */}
       <div style={{ height: 180 + (50 * (Math.max(existingContracts.length - 1, 0))), width: '100%' }}>
         <DataGrid
-        rows={existingContracts}
+        rows={testData}
         columns={columns}
         pageSize={5}
         onCellClick={handleCellClick}
-        // rowsPerPageOptions={[5]}
+        rowsPerPageOptions={[5]}
       />
       </div>
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setIsSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert severity="info">
+        {snackbarMessage}
+        </Alert>
+        </Snackbar>
     </Paper>
   );
 }
