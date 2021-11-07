@@ -1,7 +1,5 @@
 # TODO
 
-* Copy address on click of cell
-* Offer approval button on right side
 * Enable approval by arbiter
 * Clean up cruft (including this file)
 * Rename client directory to app
