@@ -47,17 +47,6 @@ const columns = [
   // TODO: add approval
 ];
 
-const testRows = [
-  {
-    id: "0x439D33DE569d0d90a84779D9b1d8014fFa588f78",
-    depositorAddress: "0x9098F9a43080caf0E56Bf67C6987C595Eb345344",
-    beneficiaryAddress: "0x9098F9a43080caf0E56Bf67C6987C595Eb1E1079",
-    arbiterAddress: "0x49CfA9E9f1ef068aeA61a8Ac8Cc3696A1b1DFd34",
-    value: "1000000000000000000"
-  }
-]
-
-// TODO: validate height calculation below
 function ExistingContracts({existingContracts}) {
   const handleCellClick = e => {
     console.log('handleCellClick', e)
@@ -69,7 +58,7 @@ function ExistingContracts({existingContracts}) {
       {/* DataGrid "No rows" implementation is buggy and requires an explicit height */}
       <div style={{ height: 180 + (50 * (Math.max(existingContracts.length - 1, 0))), width: '100%' }}>
         <DataGrid
-        rows={testRows}
+        rows={existingContracts}
         columns={columns}
         pageSize={5}
         onCellClick={handleCellClick}

@@ -6,4 +6,6 @@ const truncateAddress = (address) => address && address.length ? `${address.slic
 
 export const formatDataGridWeiValue = (params) => `${convertWeiToEther(params.value)} ETH`;
 
-const convertWeiToEther = (wei) => ethers.utils.formatEther(wei);
+const convertWeiToEther = wei => ethers.utils.formatEther(wei);
+
+export const convertEtherToWei = eth => ethers.utils.parseEther(eth);

@@ -1,6 +1,5 @@
 # TODO
 
-* Show depositor address in table
 * Copy address on click of cell
 * Offer approval button on right side
 * Enable approval by arbiter
