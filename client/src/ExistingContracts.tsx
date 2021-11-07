@@ -13,6 +13,14 @@ const columns = [
     width: 110
   },
   {
+    field: 'depositorAddress',
+    headerName: 'Depositor',
+    valueFormatter: formatDataGridAddress,
+    hideSortIcons: true,
+    disableColumnMenu: true,
+    width: 110
+  },
+  {
     field: 'beneficiaryAddress',
     headerName: 'Beneficiary',
     valueFormatter: formatDataGridAddress,
@@ -42,6 +50,7 @@ const columns = [
 const testRows = [
   {
     id: "0x439D33DE569d0d90a84779D9b1d8014fFa588f78",
+    depositorAddress: "0x9098F9a43080caf0E56Bf67C6987C595Eb345344",
     beneficiaryAddress: "0x9098F9a43080caf0E56Bf67C6987C595Eb1E1079",
     arbiterAddress: "0x49CfA9E9f1ef068aeA61a8Ac8Cc3696A1b1DFd34",
     value: "1000000000000000000"

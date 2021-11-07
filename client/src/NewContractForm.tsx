@@ -10,17 +10,6 @@ function NewContractForm({setExistingContracts}) {
   const [beneficiaryAddress, setBeneficiaryAddress] = useState("");
   const [depositAmount, setDepositAmount] = useState("");
 
-//   let contracts = 0;
-// async function newContract() {
-//   const beneficiary = document.getElementById("beneficiary").value;
-//   const arbiter = document.getElementById("arbiter").value;
-//   const value = ethers.BigNumber.from(document.getElementById("wei").value);
-//   const contract = await deploy(arbiter, beneficiary, value);
-//   addContract(++contracts, contract, arbiter, beneficiary, value);
-// }
-
-// document.getElementById("deploy").addEventListener("click", newContract);
-
   const handleDeploy = async () => {
     console.log('handleDeploy');
     console.log('setExistingContracts', setExistingContracts)
@@ -33,6 +22,7 @@ function NewContractForm({setExistingContracts}) {
     console.log('contractRaw', contractRaw);
     const contractClean = {
       id: contractRaw.address,
+      depositorAddress: contractRaw.deployTransaction.from,
       arbiterAddress,
       beneficiaryAddress,
       value: depositAmount
