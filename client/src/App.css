@@ -14,28 +14,3 @@ h2 {
   padding-bottom: 8px;
   border-bottom: 1px solid #eee;
 }
-
-.existing-contract ul {
-  padding: 10px;
-  margin: 20px;
-  background-color: #eee;
-}
-
-.existing-contract ul > li {
-  list-style: none;
-  display: flex;
-  margin: 10px;
-}
-
-.existing-contract ul > li > div {
-  margin: 0 5px;
-}
-
-.existing-contract ul > li > :first-child {
-  font-weight: bold;
-}
-
-.existing-contract .complete {
-  color: #5aa75a;
-  text-align: center;
-}
