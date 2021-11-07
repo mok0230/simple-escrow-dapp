@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 // TODO: define widths
 const columns = [
   { 
-    field: 'address', 
+    field: 'id', 
     headerName: 'Address' 
   },
   {

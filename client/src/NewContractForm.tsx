@@ -32,7 +32,7 @@ function NewContractForm({setExistingContracts}) {
     const contractRaw = await factory.deploy(arbiterAddress, beneficiaryAddress, { value: ethers.BigNumber.from(depositAmount) });
     console.log('contractRaw', contractRaw);
     const contractClean = {
-      address: contractRaw.address,
+      id: contractRaw.address,
       arbiterAddress,
       beneficiaryAddress,
       value: depositAmount
