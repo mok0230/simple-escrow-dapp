@@ -1,7 +1,8 @@
-import { Alert, Paper, Snackbar } from "@mui/material";
+import { Alert, Paper, Snackbar, Chip } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import { useState } from "react";
 import { formatDataGridAddress, formatDataGridWeiValue } from "./utils";
+import DoneIcon from '@mui/icons-material/Done';
 
 const testData = [
   {
@@ -13,70 +14,96 @@ const testData = [
   }
 ]
 
-const columns = [
-  { 
-    field: 'id', 
-    headerName: 'Address',
-    valueFormatter: formatDataGridAddress,
-    hideSortIcons: true,
-    disableColumnMenu: true,
-    width: 110,
-    headerClassName: 'existing-contracts-header-cell',
-    cellClassName: 'existing-contracts-body-cell'
-  },
-  {
-    field: 'depositorAddress',
-    headerName: 'Depositor',
-    valueFormatter: formatDataGridAddress,
-    hideSortIcons: true,
-    disableColumnMenu: true,
-    width: 110,
-    headerClassName: 'existing-contracts-header-cell',
-    cellClassName: 'existing-contracts-body-cell'
-  },
-  {
-    field: 'beneficiaryAddress',
-    headerName: 'Beneficiary',
-    valueFormatter: formatDataGridAddress,
-    hideSortIcons: true,
-    disableColumnMenu: true,
-    width: 110,
-    headerClassName: 'existing-contracts-header-cell',
-    cellClassName: 'existing-contracts-body-cell'
-  },
-  {
-    field: 'arbiterAddress',
-    headerName: 'Arbiter',
-    valueFormatter: formatDataGridAddress,
-    hideSortIcons: true,
-    disableColumnMenu: true,
-    width: 110,
-    headerClassName: 'existing-contracts-header-cell',
-    cellClassName: 'existing-contracts-body-cell'
-  },
-  {
-    field: 'value',
-    headerName: 'Value',
-    type: 'number',
-    valueFormatter: formatDataGridWeiValue,
-    hideSortIcons: true,
-    disableColumnMenu: true,
-    headerClassName: 'existing-contracts-header-cell',
-    cellClassName: 'existing-contracts-body-cell'
-  }
-  // TODO: add approval
-];
+
 
 function ExistingContracts({existingContracts}) {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  
   const handleCellClick = async e => {
+    if(e.field === 'approved') return;
+
     const cellContent = e.row[e.field];
     console.log('copying to clipboard:', cellContent);
     await navigator.clipboard.writeText(cellContent);
     setSnackbarMessage(`Value copied to clipboard: ${cellContent}`);
     setIsSnackbarOpen(true);
   }
+
+  const handleApproveTransfer = e => {
+    console.log('handleApproveTransfer', e)
+  }
+
+  const approvalCellRenderer = e => {
+    return e.row["approved"] ? 
+      <Chip label="Approved!" color="success" /> : 
+      <Chip icon={<DoneIcon />} label="Approve Transfer" color="primary" variant="outlined" onClick={() => handleApproveTransfer(e.id)} />
+  }
+
+  const columns = [
+    { 
+      field: 'id', 
+      headerName: 'Address',
+      valueFormatter: formatDataGridAddress,
+      hideSortIcons: true,
+      disableColumnMenu: true,
+      width: 110,
+      headerClassName: 'existing-contracts-header-cell',
+      cellClassName: 'existing-contracts-body-cell'
+    },
+    {
+      field: 'depositorAddress',
+      headerName: 'Depositor',
+      valueFormatter: formatDataGridAddress,
+      hideSortIcons: true,
+      disableColumnMenu: true,
+      width: 110,
+      headerClassName: 'existing-contracts-header-cell',
+      cellClassName: 'existing-contracts-body-cell'
+    },
+    {
+      field: 'beneficiaryAddress',
+      headerName: 'Beneficiary',
+      valueFormatter: formatDataGridAddress,
+      hideSortIcons: true,
+      disableColumnMenu: true,
+      width: 110,
+      headerClassName: 'existing-contracts-header-cell',
+      cellClassName: 'existing-contracts-body-cell'
+    },
+    {
+      field: 'arbiterAddress',
+      headerName: 'Arbiter',
+      valueFormatter: formatDataGridAddress,
+      hideSortIcons: true,
+      disableColumnMenu: true,
+      width: 110,
+      headerClassName: 'existing-contracts-header-cell',
+      cellClassName: 'existing-contracts-body-cell'
+    },
+    {
+      field: 'value',
+      headerName: 'Value',
+      type: 'number',
+      valueFormatter: formatDataGridWeiValue,
+      hideSortIcons: true,
+      disableColumnMenu: true,
+      headerClassName: 'existing-contracts-header-cell',
+      cellClassName: 'existing-contracts-body-cell'
+    },
+    {
+      field: 'approved',
+      headerName: 'Approval Status',
+      hideSortIcons: true,
+      disableColumnMenu: true,
+      headerClassName: 'existing-contracts-header-cell',
+      cellClassName: 'existing-contracts-body-cell',
+      flex: 2,
+      renderCell: approvalCellRenderer
+    }
+  
+    // TODO: add approval
+  ];
   
   return (
     <Paper elevation={3} sx={{p: 3, mb:2}}>
