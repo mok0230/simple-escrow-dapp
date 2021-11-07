@@ -1,23 +1,43 @@
 import { Button, InputAdornment, Paper, TextField } from "@mui/material";
 import { useState } from "react";
+import {ethers} from 'ethers';
+import Escrow from './artifacts/contracts/Escrow.sol/Escrow.json';
 
-function NewContractForm() {
+declare var ethereum: any;
+
+function NewContractForm({setExistingContracts}) {
   const [arbiterAddress, setArbiterAddress] = useState("");
   const [beneficiaryAddress, setBeneficiaryAddress] = useState("");
   const [depositAmount, setDepositAmount] = useState("");
 
-  // const deploy = async (arbiter, beneficiary, value) => {
-  //   await ethereum.request({ method: 'eth_requestAccounts' });
-  //   const signer = provider.getSigner();
-  //   const factory = new ethers.ContractFactory(Escrow.abi, Escrow.bytecode, signer);
-  //   return factory.deploy(arbiter, beneficiary, { value });
-  // }
+//   let contracts = 0;
+// async function newContract() {
+//   const beneficiary = document.getElementById("beneficiary").value;
+//   const arbiter = document.getElementById("arbiter").value;
+//   const value = ethers.BigNumber.from(document.getElementById("wei").value);
+//   const contract = await deploy(arbiter, beneficiary, value);
+//   addContract(++contracts, contract, arbiter, beneficiary, value);
+// }
 
-  const handleDeploy = () => {
+// document.getElementById("deploy").addEventListener("click", newContract);
+
+  const handleDeploy = async () => {
     console.log('handleDeploy');
-    console.log('arbiterAddress', arbiterAddress);
-    console.log('beneficiaryAddress', beneficiaryAddress);
-    console.log('depositAmount', depositAmount);
+    console.log('setExistingContracts', setExistingContracts)
+    
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    await ethereum.request({ method: 'eth_requestAccounts' });
+    const signer = provider.getSigner();
+    const factory = new ethers.ContractFactory(Escrow.abi, Escrow.bytecode, signer);
+    const contractRaw = await factory.deploy(arbiterAddress, beneficiaryAddress, { value: ethers.BigNumber.from(depositAmount) });
+    console.log('contractRaw', contractRaw);
+    const contractClean = {
+      address: contractRaw.address,
+      arbiterAddress,
+      beneficiaryAddress,
+      value: depositAmount
+    }
+    setExistingContracts(existingContracts => [...existingContracts, contractClean])
   }
 
   return (
