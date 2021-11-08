@@ -4,9 +4,9 @@ import {ethers} from 'ethers';
 import Escrow from './artifacts/contracts/Escrow.sol/Escrow.json';
 import { convertEtherToWei } from "./utils";
 
-declare var ethereum: any;
+declare const ethereum: any;
 
-function NewContractForm({setExistingContracts}) {
+function NewContractForm({provider, setExistingContracts}) {
   const [arbiterAddress, setArbiterAddress] = useState("");
   const [beneficiaryAddress, setBeneficiaryAddress] = useState("");
   const [depositAmountEth, setDepositAmountEth] = useState("");
@@ -15,25 +15,25 @@ function NewContractForm({setExistingContracts}) {
     console.log('handleDeploy');
     console.log('setExistingContracts', setExistingContracts)
     
-    const provider = new ethers.providers.Web3Provider(ethereum);
     await ethereum.request({ method: 'eth_requestAccounts' });
 
     const signer = provider.getSigner();
     const factory = new ethers.ContractFactory(Escrow.abi, Escrow.bytecode, signer);
 
     const depositAmountWei = convertEtherToWei(depositAmountEth);
-    const contractRaw = await factory.deploy(arbiterAddress, beneficiaryAddress, { value: ethers.BigNumber.from(depositAmountWei) });
-    console.log('contractRaw', contractRaw);
+    const deployedContract = await factory.deploy(arbiterAddress, beneficiaryAddress, { value: ethers.BigNumber.from(depositAmountWei) });
+    console.log('deployedContract', deployedContract);
 
-    const contractClean = {
-      id: contractRaw.address,
-      depositorAddress: contractRaw.deployTransaction.from,
+    const contractData = {
+      id: deployedContract.address,
+      depositorAddress: deployedContract.deployTransaction.from,
       arbiterAddress,
       beneficiaryAddress,
-      value: depositAmountWei
+      value: depositAmountWei,
+      deployedContract
     }
-    
-    setExistingContracts(existingContracts => [...existingContracts, contractClean])
+
+    setExistingContracts(existingContracts => [...existingContracts, contractData])
   }
 
   return (

@@ -1,27 +1,27 @@
 import { Alert, Paper, Snackbar, Chip } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import { useState } from "react";
-import { formatDataGridAddress, formatDataGridWeiValue } from "./utils";
+import { approveContract, formatDataGridAddress, formatDataGridWeiValue, getContractById } from "./utils";
 import DoneIcon from '@mui/icons-material/Done';
 
-const testData = [
-  {
-    id: 'asdfsadfdsfdsafsdafds',
-    depositorAddress: '23fd34rf34te34',
-    beneficiaryAddress: '34rfret43t43efrgd',
-    arbiterAddress: 'sdf3sf3wesf3sdfs',
-    value: '1000000000000000000'
-  }
-]
+// const testData = [
+//   {
+//     id: 'asdfsadfdsfdsafsdafds',
+//     depositorAddress: '23fd34rf34te34',
+//     beneficiaryAddress: '34rfret43t43efrgd',
+//     arbiterAddress: 'sdf3sf3wesf3sdfs',
+//     value: '1000000000000000000'
+//   }
+// ]
 
 
 
-function ExistingContracts({existingContracts}) {
+function ExistingContracts({provider, existingContracts, setExistingContracts}) {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   
   const handleCellClick = async e => {
-    if(e.field === 'approved') return;
+    if (e.field === 'approved') return;
 
     const cellContent = e.row[e.field];
     console.log('copying to clipboard:', cellContent);
@@ -30,14 +30,25 @@ function ExistingContracts({existingContracts}) {
     setIsSnackbarOpen(true);
   }
 
-  const handleApproveTransfer = e => {
-    console.log('handleApproveTransfer', e)
+  const handleApproveTransfer = async contractId => {
+    console.log('handleApproveTransfer', contractId);
+    const contract = getContractById(contractId, existingContracts);
+    console.log('contract', contract);
+    const signer = provider.getSigner();
+    console.log('signer', signer);
+    await contract.deployedContract.connect(signer).approve();
   }
 
   const approvalCellRenderer = e => {
-    return e.row["approved"] ? 
-      <Chip label="Approved!" color="success" /> : 
-      <Chip icon={<DoneIcon />} label="Approve Transfer" color="primary" variant="outlined" onClick={() => handleApproveTransfer(e.id)} />
+    console.log('approvalCellRenderer e', e)
+    if (e.row["approved"]) {
+      return <Chip label="Approved!" color="success" />;
+    } else {
+      e.row["deployedContract"].on("Approved", () => {
+        approveContract(e.id, existingContracts, setExistingContracts);
+      });
+      return <Chip icon={<DoneIcon />} label="Approve Transfer" color="primary" variant="outlined" onClick={() => handleApproveTransfer(e.id)} />
+    } 
   }
 
   const columns = [
@@ -101,8 +112,6 @@ function ExistingContracts({existingContracts}) {
       flex: 2,
       renderCell: approvalCellRenderer
     }
-  
-    // TODO: add approval
   ];
   
   return (
@@ -112,7 +121,7 @@ function ExistingContracts({existingContracts}) {
       {/* DataGrid "No rows" implementation is buggy and requires an explicit height */}
       <div style={{ height: 180 + (50 * (Math.max(existingContracts.length - 1, 0))), width: '100%' }}>
         <DataGrid
-        rows={testData}
+        rows={existingContracts}
         columns={columns}
         pageSize={5}
         onCellClick={handleCellClick}
