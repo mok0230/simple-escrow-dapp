@@ -6,7 +6,7 @@ This is an Escrow Dapp built with [Hardhat](https://hardhat.org/).
 
 There are three top-level folders:
 
-1. `/app` - contains the front-end application
+1. `/app` - contains the React application and dependencies
 2. `/contracts` - contains the solidity contract
 3. `/tests` - contains tests for the solidity contract
 
@@ -20,6 +20,8 @@ Compile the contracts using `npx hardhat compile`. The artifacts will be placed 
 
 ## Front-End
 
-To run the front-end application move into the `app` folder and run `npx parcel index.html`.
+To run the React application move into the `app` folder and run `yarn start`.
 
-You can learn more about Parcel [here](https://parceljs.org/).
+## Local Testing
+
+Run a local blockchain node with [Ganache CLI](https://docs.nethereum.com/en/latest/ethereum-and-clients/ganache-cli/) and configure MetaMask to the correct network.
