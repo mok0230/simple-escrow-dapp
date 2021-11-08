@@ -3,8 +3,7 @@ import { useState } from "react";
 import {ethers} from 'ethers';
 import Escrow from './artifacts/contracts/Escrow.sol/Escrow.json';
 import { convertEtherToWei } from "./utils";
-
-declare const ethereum: any;
+import { Contract } from "./types";
 
 function NewContractForm({provider, setExistingContracts}) {
   const [arbiterAddress, setArbiterAddress] = useState("");
@@ -39,7 +38,7 @@ function NewContractForm({provider, setExistingContracts}) {
       const deployedContract = await factory.deploy(arbiterAddress, beneficiaryAddress, { value: ethers.BigNumber.from(depositAmountWei) });
       console.log('deployedContract', deployedContract);
 
-      const contractData = {
+      const contractData: Contract = {
         id: deployedContract.address,
         depositorAddress: deployedContract.deployTransaction.from,
         arbiterAddress,

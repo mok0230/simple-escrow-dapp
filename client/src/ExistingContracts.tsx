@@ -13,8 +13,6 @@ import { approveContract, formatDataGridAddress, formatDataGridWeiValue, getCont
 //   }
 // ]
 
-
-
 function ExistingContracts({provider, existingContracts, setExistingContracts}) {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
