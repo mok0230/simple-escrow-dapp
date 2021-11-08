@@ -17,23 +17,28 @@ function NewContractForm({provider, setExistingContracts}) {
     
     await ethereum.request({ method: 'eth_requestAccounts' });
 
-    const signer = provider.getSigner();
-    const factory = new ethers.ContractFactory(Escrow.abi, Escrow.bytecode, signer);
+    try {
+      const signer = provider.getSigner();
+      const factory = new ethers.ContractFactory(Escrow.abi, Escrow.bytecode, signer);
 
-    const depositAmountWei = convertEtherToWei(depositAmountEth);
-    const deployedContract = await factory.deploy(arbiterAddress, beneficiaryAddress, { value: ethers.BigNumber.from(depositAmountWei) });
-    console.log('deployedContract', deployedContract);
+      const depositAmountWei = convertEtherToWei(depositAmountEth);
+      const deployedContract = await factory.deploy(arbiterAddress, beneficiaryAddress, { value: ethers.BigNumber.from(depositAmountWei) });
+      console.log('deployedContract', deployedContract);
 
-    const contractData = {
-      id: deployedContract.address,
-      depositorAddress: deployedContract.deployTransaction.from,
-      arbiterAddress,
-      beneficiaryAddress,
-      value: depositAmountWei,
-      deployedContract
+      const contractData = {
+        id: deployedContract.address,
+        depositorAddress: deployedContract.deployTransaction.from,
+        arbiterAddress,
+        beneficiaryAddress,
+        value: depositAmountWei,
+        deployedContract,
+        status: 'submitted'
+      }
+
+      setExistingContracts(existingContracts => [...existingContracts, contractData])
+    } catch (e) {
+      console.error('Error!', e);
     }
-
-    setExistingContracts(existingContracts => [...existingContracts, contractData])
   }
 
   return (

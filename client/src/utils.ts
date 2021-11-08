@@ -20,9 +20,9 @@ export const getContractById = (id, contracts) => {
 
 export const approveContract = (contractId, existingContracts, setExistingContracts) => {
   const contract = getContractById(contractId, existingContracts);
-  console.log('setting approved to true!');
+  console.log('setting status to approved');
   console.log('contracts')
-  contract.approved = true;
+  contract.status = 'approved';
   setExistingContracts([...existingContracts]);
   console.log('did the table update?')
 }

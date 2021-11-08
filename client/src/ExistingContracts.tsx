@@ -2,7 +2,6 @@ import { Alert, Paper, Snackbar, Chip } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import { useState } from "react";
 import { approveContract, formatDataGridAddress, formatDataGridWeiValue, getContractById } from "./utils";
-import DoneIcon from '@mui/icons-material/Done';
 
 // const testData = [
 //   {
@@ -21,7 +20,7 @@ function ExistingContracts({provider, existingContracts, setExistingContracts}) 
   const [snackbarMessage, setSnackbarMessage] = useState("");
   
   const handleCellClick = async e => {
-    if (e.field === 'approved') return;
+    if (e.field === 'status') return;
 
     const cellContent = e.row[e.field];
     console.log('copying to clipboard:', cellContent);
@@ -32,23 +31,33 @@ function ExistingContracts({provider, existingContracts, setExistingContracts}) 
 
   const handleApproveTransfer = async contractId => {
     console.log('handleApproveTransfer', contractId);
+
     const contract = getContractById(contractId, existingContracts);
+    contract.status = 'inProgress';
     console.log('contract', contract);
-    const signer = provider.getSigner();
-    console.log('signer', signer);
-    await contract.deployedContract.connect(signer).approve();
+    try {
+      const signer = provider.getSigner();
+      console.log('signer', signer);
+      await contract.deployedContract.connect(signer).approve();
+    } catch (e) {
+      console.error('Error!', e);
+      contract.status = 'submitted';
+    }
+    setExistingContracts([...existingContracts]); // force re-render
   }
 
   const approvalCellRenderer = e => {
     console.log('approvalCellRenderer e', e)
-    if (e.row["approved"]) {
+    if (e.row["status"] === "approved") {
       return <Chip label="Approved!" color="success" />;
-    } else {
+    } else if (e.row["status"] === "submitted") {
       e.row["deployedContract"].on("Approved", () => {
         approveContract(e.id, existingContracts, setExistingContracts);
       });
-      return <Chip icon={<DoneIcon />} label="Approve Transfer" color="primary" variant="outlined" onClick={() => handleApproveTransfer(e.id)} />
-    } 
+      return <Chip label="Approve Transfer" color="primary" onClick={() => handleApproveTransfer(e.id)} />
+    } else if (e.row["status"] === "inProgress") {
+      return <Chip label="Transfer in Progress..." color="warning" />;
+    }
   }
 
   const columns = [
@@ -103,8 +112,8 @@ function ExistingContracts({provider, existingContracts, setExistingContracts}) 
       cellClassName: 'existing-contracts-body-cell'
     },
     {
-      field: 'approved',
-      headerName: 'Approval Status',
+      field: 'status',
+      headerName: 'Status',
       hideSortIcons: true,
       disableColumnMenu: true,
       headerClassName: 'existing-contracts-header-cell',

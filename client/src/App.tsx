@@ -14,7 +14,7 @@ type Contract = {
   arbiterAddress: string;
   value: string;
   deployedContract: any;
-  approved?: boolean;
+  status: 'submitted' | 'inProgress' | 'approved';
 }
 
 function App() {

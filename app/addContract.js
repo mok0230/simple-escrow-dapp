@@ -14,8 +14,13 @@ export default async function addContract(id, contract, arbiter, beneficiary, va
   });
 
   document.getElementById(buttonId).addEventListener("click", async () => {
-    const signer = provider.getSigner();
-    await contract.connect(signer).approve();
+    try {
+      const signer = provider.getSigner();
+      await contract.connect(signer).approve();
+    } catch (e) {
+      console.error('Error!', e);
+    }
+    
   });
 }
 
